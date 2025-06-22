@@ -13,6 +13,29 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommend
     lsb-release \
     software-properties-common
 
+RUN apt-get update && apt-get install -y \
+    curl wget unzip apt-transport-https software-properties-common \
+    ca-certificates gnupg lsb-release libicu70 libssl3 libkrb5-3 libunwind8 \
+    libcurl4 openssh-client git sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+# ---- Install .NET 8 ----
+RUN wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh \
+    && chmod +x dotnet-install.sh \
+    && ./dotnet-install.sh --channel 8.0 --install-dir /usr/share/dotnet \
+    && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+
+ENV DOTNET_ROOT=/usr/share/dotnet
+ENV PATH="$PATH:/usr/share/dotnet"
+
+# ---- Install PowerShell ----
+RUN curl -sSL https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -o packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && apt-get update \
+    && apt-get install -y powershell \
+    && pwsh -v
+
+
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
 # Can be 'linux-x64', 'linux-arm64', 'linux-arm', 'rhel.6-x64'.
