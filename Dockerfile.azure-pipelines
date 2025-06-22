@@ -14,7 +14,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommend
     software-properties-common \
     dotnet-sdk-8.0
 
-RUN dotnet tool install --global PowerShell
+RUN dotnet tool install -g --version 7.4.4 PowerShell
 
 
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
